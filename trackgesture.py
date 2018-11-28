@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar  23 01:01:43 2017
 
-@author: abhisheksingh
 """
 
 #%%
@@ -23,7 +21,7 @@ height = 200
 width = 200
 
 saveImg = False
-guessGesture = False
+guessGesture = True
 visualize = False
 
 lastgesture = -1
@@ -102,6 +100,8 @@ def skinMask(frame, x0, y0, width, height, framecount, plot):
         #res = cv2.UMat.get(res)
         t = threading.Thread(target=myNN.guessGesture, args = [mod, res])
         t.start()
+        # t.join()
+        # myNN.update(plot)
     elif visualize == True:
         layer = int(input("Enter which layer to visualize "))
         cv2.waitKey(0)
@@ -131,6 +131,8 @@ def binaryMask(frame, x0, y0, width, height, framecount, plot ):
         #ores = cv2.UMat.get(res)
         t = threading.Thread(target=myNN.guessGesture, args = [mod, res])
         t.start()
+        # t.join()
+        # myNN.update(plot)
     elif visualize == True:
         layer = int(input("Enter which layer to visualize "))
         cv2.waitKey(1)

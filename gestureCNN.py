@@ -1,9 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr  6 01:01:43 2017
 
-@author: abhisheksingh
 """
 
 from keras.models import Sequential
@@ -88,20 +86,20 @@ jsonarray = {}
 #%%
 def update(plot):
     global jsonarray
-    h = 450
+    h = 350
     y = 30
-    w = 45
+    w = 10
     font = cv2.FONT_HERSHEY_SIMPLEX
 
-    #plot = np.zeros((512,512,3), np.uint8)
+    plot = np.zeros((412,550,3), np.uint8)
     
-    #array = {"OK": 65.79261422157288, "NOTHING": 0.7953541353344917, "PEACE": 5.33270463347435, "PUNCH": 0.038031660369597375, "STOP": 28.04129719734192}
+    # jsonarray = {"OK": 99.79261422157288, "NOTHING": 0.7953541353344917, "PEACE": 5.33270463347435, "PUNCH": 0.038031660369597375, "STOP": 28.04129719734192}
     
     for items in jsonarray:
         mul = (jsonarray[items]) / 100
         #mul = random.randint(1,100) / 100
         cv2.line(plot,(0,y),(int(h * mul),y),(255,0,0),w)
-        cv2.putText(plot,items,(0,y+5), font , 0.7,(0,255,0),2,1)
+        cv2.putText(plot,items,(400,y+5), font , 0.7,(0,255,0),2,1)
         y = y + w + 30
 
     return plot
@@ -232,12 +230,14 @@ def guessGesture(model, img):
     rimage = image.reshape(1, img_channels, img_rows, img_cols)
     
     # Now feed it to the NN, to fetch the predictions
-    #index = model.predict_classes(rimage)
-    #prob_array = model.predict_proba(rimage)
+    # index = model.predict_classes(rimage)
+    # prob_array = model.predict_proba(rimage)
+    # print (prob_array)
+
     
     prob_array = get_output([rimage, 0])[0]
     
-    #print prob_array
+    print (prob_array)
     
     d = {}
     i = 0
@@ -251,7 +251,7 @@ def guessGesture(model, img):
     guess = max(d.items(), key=operator.itemgetter(1))[0]
     prob  = d[guess]
 
-    if prob > 60.0:
+    if prob > 5.0:
         #print(guess + "  Probability: ", prob)
 
         #Enable this to save the predictions in a json file,
@@ -292,8 +292,8 @@ def initializers():
     ##
     label=np.ones((total_images,),dtype = int)
     
-    samples_per_class = total_images / nb_classes
-    print("samples_per_class - ",samples_per_class)
+    samples_per_class = int(total_images / nb_classes)
+    print("samples_per_class :  ",samples_per_class)
     s = 0
     r = samples_per_class
     for classIndex in range(nb_classes):
