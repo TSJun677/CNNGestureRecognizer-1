@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+
+
+*.hdf5
+train_3/
+train_img

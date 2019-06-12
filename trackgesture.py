@@ -44,7 +44,7 @@ mod = 0
 
 banner =  '''\nWhat would you like to do ?
     1- Use pretrained model for gesture recognition & layer visualization
-    2- Train the model (you will require image samples for training under .\imgfolder)
+    2- Train the model (you will require image samples for training under .\train_2)
     3- Visualize feature maps of different layers of trained model
     4- Exit	
     '''
@@ -74,7 +74,7 @@ def skinMask(frame, x0, y0, width, height, framecount, plot):
     low_range = np.array([0, 50, 80])
     upper_range = np.array([30, 200, 255])
     
-    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,255,0),1)
+    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,0,255),6)
     #roi = cv2.UMat(frame[y0:y0+height, x0:x0+width])
     roi = frame[y0:y0+height, x0:x0+width]
     
@@ -96,7 +96,7 @@ def skinMask(frame, x0, y0, width, height, framecount, plot):
     
     if saveImg == True:
         saveROIImg(res)
-    elif guessGesture == True and (framecount % 5) == 4:
+    elif guessGesture == True and (framecount % 1) == 0:
         #res = cv2.UMat.get(res)
         t = threading.Thread(target=myNN.guessGesture, args = [mod, res])
         t.start()
@@ -115,7 +115,7 @@ def skinMask(frame, x0, y0, width, height, framecount, plot):
 def binaryMask(frame, x0, y0, width, height, framecount, plot ):
     global guessGesture, visualize, mod, lastgesture, saveImg
     
-    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,255,0),1)
+    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,0, 255),6)
     #roi = cv2.UMat(frame[y0:y0+height, x0:x0+width])
     roi = frame[y0:y0+height, x0:x0+width]
     
@@ -150,7 +150,7 @@ def binaryMask(frame, x0, y0, width, height, framecount, plot ):
 def bkgrndSubMask(frame, x0, y0, width, height, framecount, plot):
     global guessGesture, takebkgrndSubMask, visualize, mod, bkgrnd, lastgesture, saveImg
         
-    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,255,0),1)
+    cv2.rectangle(frame, (x0,y0),(x0+width,y0+height),(0,0,255),6)
     roi = frame[y0:y0+height, x0:x0+width]
     #roi = cv2.UMat(frame[y0:y0+height, x0:x0+width])
     roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
@@ -212,8 +212,8 @@ def Main():
             input("Press any key to continue")
             break
         elif ans == 1:
-            print("Will load default weight file")
-            mod = myNN.loadCNN(0)
+            print("Will load lyz weight file")
+            mod = myNN.loadCNN(1)
             break
         elif ans == 3:
             if not mod:
@@ -233,7 +233,7 @@ def Main():
             return 0
         
     ## Grab camera input
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     cv2.namedWindow('Original', cv2.WINDOW_NORMAL)
 
     # set rt size as 640x480
@@ -267,7 +267,7 @@ def Main():
             timediff = (end - start)
             if( timediff >= 1):
                 #timediff = end - start
-                fps = 'FPS:%s' %(framecount)
+                fps = 'FPS:%s' %(framecount / timediff)
                 start = time.time()
                 framecount = 0
 

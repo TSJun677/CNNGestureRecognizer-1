@@ -9,6 +9,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D
 from keras.optimizers import SGD,RMSprop,adam
 from keras.utils import np_utils
+import pyautogui as pg
 
 from keras import backend as K
 if K.backend() == 'tensorflow':
@@ -55,10 +56,10 @@ batch_size = 32
 ## Number of output classes (change it accordingly)
 ## eg: In my case I wanted to predict 4 types of gestures (Ok, Peace, Punch, Stop)
 ## NOTE: If you change this then dont forget to change Labels accordingly
-nb_classes = 5
+nb_classes = 3
 
 # Number of epochs to train (change it accordingly)
-nb_epoch = 15  #25
+nb_epoch = 4
 
 # Total number of convolutional filters to use
 nb_filters = 32
@@ -73,13 +74,14 @@ path = "./"
 path1 = "./gestures"    #path of folder of images
 
 ## Path2 is the folder which is fed in to training model
-path2 = './imgfolder_b'
+path2 = './train_3'
 
-WeightFileName = ["ori_4015imgs_weights.hdf5","bw_4015imgs_weights.hdf5","bw_2510imgs_weights.hdf5","./bw_weight.hdf5","./final_c_weights.hdf5","./semiVgg_1_weights.hdf5","/new_wt_dropout20.hdf5","./weights-CNN-gesture_skinmask.hdf5"]
+WeightFileName = ["ori_4015imgs_weights.hdf5","lyz.hdf5", "bw_4015imgs_weights.hdf5","bw_2510imgs_weights.hdf5","./bw_weight.hdf5","./final_c_weights.hdf5","./semiVgg_1_weights.hdf5","/new_wt_dropout20.hdf5","./weights-CNN-gesture_skinmask.hdf5"]
 
 # outputs
-output = ["OK", "NOTHING","PEACE", "PUNCH", "STOP"]
-#output = ["PEACE", "STOP", "THUMBSDOWN", "THUMBSUP"]
+#output = ["OK", "NOTHING","PEACE", "PUNCH", "STOP"]
+output = ["NOTHING", "PUNCH", "STOP"]
+
 
 jsonarray = {}
 
@@ -251,7 +253,7 @@ def guessGesture(model, img):
     guess = max(d.items(), key=operator.itemgetter(1))[0]
     prob  = d[guess]
 
-    if prob > 5.0:
+    if prob > 70.0:
         #print(guess + "  Probability: ", prob)
 
         #Enable this to save the predictions in a json file,
@@ -261,7 +263,9 @@ def guessGesture(model, img):
         #with open('gesturejson.txt', 'w') as outfile:
         #    json.dump(d, outfile)
         jsonarray = d
-                
+        
+        if guess != 'STOP':
+            pg.press("up")
         return output.index(guess)
 
     else:
@@ -343,7 +347,7 @@ def trainModel(model):
 
     # Now start the training of the loaded model
     hist = model.fit(X_train, Y_train, batch_size=batch_size, epochs=nb_epoch,
-                 verbose=1, validation_split=0.2)
+                 verbose=1, validation_split=0.07)
 
     visualizeHis(hist)
 
@@ -470,3 +474,4 @@ def visualizeLayer(model, img, input_image, layerIndex):
         print("Can't dump data of this layer{}- {}".format(layerIndex, layer.__class__.__name__))
 
 
+        
