@@ -1,0 +1,3 @@
+[submodule "t-rex-runner"]
+	path = t-rex-runner
+	url = https://github.com/codestorm04/t-rex-runner.git
